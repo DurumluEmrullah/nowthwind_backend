@@ -19,8 +19,6 @@ public class BaseController<T> {
 
     @GetMapping("/getAll")
     public ResponseEntity<?> getAll(@RequestParam(defaultValue = "0",name = "page") int page ,@RequestParam(defaultValue = "10",name = "size") int size){
-        if(true)
-        throw new UserNotFoundException("deneme");
        return ResponseEntity.ok(baseService.getAll(page,size));
     }
 

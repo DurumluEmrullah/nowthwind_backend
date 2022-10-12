@@ -16,7 +16,7 @@ public class Region {
     @Column(name = "region_id")
     private int id;
 
-    @NotBlank
+
     @Size(min = 10)
     @Column(name = "region_description")
     private String regionDescription;
