@@ -19,9 +19,6 @@ public class Log {
     @Column(name = "parameters")
     private String parameter;
 
-    @Column(name = "method_name")
-    private String method;
-
     @Column(name = "date")
     private Date date;
 

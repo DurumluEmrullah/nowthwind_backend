@@ -26,6 +26,6 @@ public class LogServiceImpl implements LogService {
 
     @Override
     public DataResult<List<Log>> getAll() {
-        return new SuccessDataResult<>("listelendi", logDao.findAll());
+        return new SuccessDataResult<>("listelendi", logDao.findByOrderByDateDesc());
     }
 }
