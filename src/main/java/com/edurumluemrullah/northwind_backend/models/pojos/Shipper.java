@@ -1,24 +1,31 @@
 package com.edurumluemrullah.northwind_backend.models.pojos;
 
+
 import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-@Entity
 @Data
-@Table(name = "customer_demographics")
-public class CustomerDemographic {
+@Entity
+@Table(name = "shippers")
+public class Shipper {
 
     @Id
+    @Column(name = "shipper_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "customer_type_id")
     private int id;
 
     @NotBlank
-    @Size(min = 7)
-    @Column(name = "customer_desc")
-    private String customerDesc;
+    @Size(min = 3,max = 40)
+    @Column(name = "company_name")
+    private String companyName;
 
+
+    @NotBlank
+
+    @Column(name = "phone")
+    private String phone;
 }

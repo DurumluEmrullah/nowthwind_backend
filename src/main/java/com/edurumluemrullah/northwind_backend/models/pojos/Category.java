@@ -5,6 +5,8 @@ import lombok.Data;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Data
 @Entity
@@ -16,9 +18,13 @@ public class Category {
     @Column(name = "category_id")
     private int categoryId;
 
+    @NotBlank
+    @Size(min = 3)
     @Column(name = "category_name")
     private String categoryName;
 
+    @NotBlank
+    @Size(min=10)
     @Column(name = "description")
     private String description;
 

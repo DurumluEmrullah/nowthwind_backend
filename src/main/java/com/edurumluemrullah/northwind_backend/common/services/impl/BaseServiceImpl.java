@@ -1,8 +1,12 @@
 package com.edurumluemrullah.northwind_backend.common.services.impl;
 
-import com.edurumluemrullah.northwind_backend.common.results.*;
+import com.edurumluemrullah.northwind_backend.common.results.DataResult;
+import com.edurumluemrullah.northwind_backend.common.results.ErrorDataResult;
+import com.edurumluemrullah.northwind_backend.common.results.Result;
+import com.edurumluemrullah.northwind_backend.common.results.SuccessDataResult;
 import com.edurumluemrullah.northwind_backend.common.services.abstracts.BaseService;
-import com.edurumluemrullah.northwind_backend.models.pojos.Category;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -18,9 +22,9 @@ public class BaseServiceImpl<T> implements BaseService<T> {
     }
 
     @Override
-    public DataResult<List<T>> getAll() {
-
-        return new SuccessDataResult<>("listelendi",jpaRepository.findAll());
+    public DataResult<List<T>> getAll(int page,int size) {
+        Pageable pageable = PageRequest.of(page,size);
+        return new SuccessDataResult<>("listelendi",jpaRepository.findAll(pageable).getContent());
     }
 
     @Override

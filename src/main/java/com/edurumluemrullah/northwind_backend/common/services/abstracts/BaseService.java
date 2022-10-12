@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface BaseService<T> {
 
-    DataResult<List<T>> getAll();
+    DataResult<List<T>> getAll(int page,int size);
     DataResult<T> create(T entity);
     DataResult<T> update(T entity);
     DataResult<T> getById(int id);

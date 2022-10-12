@@ -1,10 +1,13 @@
 package com.edurumluemrullah.northwind_backend.common.controller;
 
+import com.edurumluemrullah.northwind_backend.common.exceptions.UserNotFoundException;
 import com.edurumluemrullah.northwind_backend.common.services.abstracts.BaseService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 
+@CrossOrigin
 public class BaseController<T> {
 
 
@@ -15,8 +18,10 @@ public class BaseController<T> {
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<?> getAll(){
-        return ResponseEntity.ok(baseService.getAll());
+    public ResponseEntity<?> getAll(@RequestParam(defaultValue = "0",name = "page") int page ,@RequestParam(defaultValue = "10",name = "size") int size){
+        if(true)
+        throw new UserNotFoundException("deneme");
+       return ResponseEntity.ok(baseService.getAll(page,size));
     }
 
     @GetMapping("/getById")
@@ -25,17 +30,17 @@ public class BaseController<T> {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> create(@RequestBody T entity){
+    public ResponseEntity<?> create(@Valid @RequestBody T entity){
         return ResponseEntity.ok(baseService.create(entity));
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> update(@RequestBody T entity){
+    public ResponseEntity<?> update(@Valid @RequestBody T entity){
         return ResponseEntity.ok(baseService.update(entity));
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<?> delete(@RequestParam("id") int id){
+    public ResponseEntity<?> delete(@RequestParam(value = "id",defaultValue = "0") int id){
         return ResponseEntity.ok(baseService.delete(id));
     }
 
