@@ -5,7 +5,7 @@ import com.edurumluemrullah.northwind_backend.common.services.abstracts.Exceptio
 import com.edurumluemrullah.northwind_backend.daos.ExceptionLogDao;
 import com.edurumluemrullah.northwind_backend.models.pojos.ExceptionLog;
 import com.edurumluemrullah.northwind_backend.models.pojos.ExceptionType;
-import com.edurumluemrullah.northwind_backend.models.pojos.dtos.CreateExceptionLogDto;
+import com.edurumluemrullah.northwind_backend.models.dtos.CreateExceptionLogDto;
 import org.springframework.stereotype.Service;
 
 

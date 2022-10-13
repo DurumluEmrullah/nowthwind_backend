@@ -5,7 +5,7 @@ import com.edurumluemrullah.northwind_backend.common.results.DataResult;
 import com.edurumluemrullah.northwind_backend.common.services.abstracts.ExceptionLogService;
 import com.edurumluemrullah.northwind_backend.common.services.abstracts.LogService;
 import com.edurumluemrullah.northwind_backend.models.pojos.Log;
-import com.edurumluemrullah.northwind_backend.models.pojos.dtos.CreateExceptionLogDto;
+import com.edurumluemrullah.northwind_backend.models.dtos.CreateExceptionLogDto;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;

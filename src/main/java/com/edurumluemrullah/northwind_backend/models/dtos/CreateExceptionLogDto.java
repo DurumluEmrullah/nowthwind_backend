@@ -1,4 +1,4 @@
-package com.edurumluemrullah.northwind_backend.models.pojos.dtos;
+package com.edurumluemrullah.northwind_backend.models.dtos;
 
 import lombok.Data;
 
