@@ -2,6 +2,7 @@ package com.edurumluemrullah.northwind_backend.controllers;
 
 
 import com.edurumluemrullah.northwind_backend.models.dtos.UserLoginRequestDto;
+import com.edurumluemrullah.northwind_backend.models.dtos.UserRegisterRequestDto;
 import com.edurumluemrullah.northwind_backend.services.abstracts.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +24,8 @@ public class UserController {
 
     }
 
-    @GetMapping("/register")
-    public String signup(){
-        return "merhaba";
+    @PostMapping("/register")
+    public ResponseEntity<?> signup(@RequestBody UserRegisterRequestDto userRegisterRequestDto){
+        return ResponseEntity.ok(userService.register(userRegisterRequestDto));
     }
 }
