@@ -3,7 +3,9 @@ package com.edurumluemrullah.northwind_backend.services.impl;
 import com.edurumluemrullah.northwind_backend.auth.JwtTokenProvider;
 import com.edurumluemrullah.northwind_backend.common.exceptions.*;
 import com.edurumluemrullah.northwind_backend.common.results.DataResult;
+import com.edurumluemrullah.northwind_backend.common.results.Result;
 import com.edurumluemrullah.northwind_backend.common.results.SuccessDataResult;
+import com.edurumluemrullah.northwind_backend.common.results.SuccessResult;
 import com.edurumluemrullah.northwind_backend.daos.UserDao;
 import com.edurumluemrullah.northwind_backend.models.dtos.UserLoginRequestDto;
 import com.edurumluemrullah.northwind_backend.models.dtos.UserLoginResponseDto;
@@ -40,13 +42,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public DataResult<UserLoginResponseDto> login(UserLoginRequestDto userLoginRequestDto) {
-//TODO refactor edilecek !!!
+
         Optional<User> user = userDao.findByUsername(userLoginRequestDto.getUsername());
 
         if(!user.isPresent()){
             throw new UserNotFoundException("User '" + userLoginRequestDto.getUsername() + "' not found");
         }
-     //   user.get().getPassword().equals(passwordEncoder.encode(userLoginRequestDto.getPassword()))
+
         if(!passwordEncoder.matches(userLoginRequestDto.getPassword(),user.get().getPassword())  ){
             throw new LoginException("wrong password");
         }
@@ -59,13 +61,13 @@ public class UserServiceImpl implements UserService {
         userLoginResponseDto.setUsername(user.get().getUsername());
         userLoginResponseDto.setEmail(user.get().getEmail());
         userLoginResponseDto.setToken(jwtTokenProvider.generateToken(user.get().getUsername(),user.get().getUserRoleList()));
-//değiştir
+
 
         return new SuccessDataResult<>("success",userLoginResponseDto);
     }
 
     @Override
-    public DataResult<User> register(UserRegisterRequestDto userRegisterRequestDto) {
+    public Result register(UserRegisterRequestDto userRegisterRequestDto) {
         //TODO refactor edilecek !!!
         Optional<User> byUsername = userDao.findByUsername(userRegisterRequestDto.getUsername());
 
@@ -97,10 +99,10 @@ public class UserServiceImpl implements UserService {
         roleSet.add(userRole);
         user.setUserRoleList(roleSet);
 
-        User registeredUser = userDao.save(user);
+        userDao.save(user);
 
 
-        return new SuccessDataResult<>("registered",user); //TODO DÜZELT
+        return new SuccessResult("registered user");
     }
 
     @Override
@@ -108,7 +110,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> byEmail = userDao.findByEmail(email);
 
         if(!byEmail.isPresent()){
-            throw new EmailNotFoundException("Email not found");
+            throw new EmailNotFoundException("Email not found");// TODO
         }
 
         return new SuccessDataResult<>("User found",byEmail.get()) ;

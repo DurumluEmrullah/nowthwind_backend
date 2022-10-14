@@ -38,7 +38,7 @@ public class BaseController<T> {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<?> delete(@RequestParam(value = "id",defaultValue = "0") int id){
+    public ResponseEntity<?> delete(@RequestParam(value = "id") int id){
         return ResponseEntity.ok(baseService.delete(id));
     }
 

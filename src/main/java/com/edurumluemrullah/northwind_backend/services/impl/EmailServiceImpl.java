@@ -6,10 +6,7 @@ import com.edurumluemrullah.northwind_backend.common.exceptions.VerificationCode
 import com.edurumluemrullah.northwind_backend.common.exceptions.WrongVerifcationCodeException;
 import com.edurumluemrullah.northwind_backend.common.results.DataResult;
 import com.edurumluemrullah.northwind_backend.common.results.Result;
-import com.edurumluemrullah.northwind_backend.common.results.SuccessDataResult;
 import com.edurumluemrullah.northwind_backend.common.results.SuccessResult;
-import com.edurumluemrullah.northwind_backend.models.dtos.UserLoginRequestDto;
-import com.edurumluemrullah.northwind_backend.models.dtos.UserLoginResponseDto;
 import com.edurumluemrullah.northwind_backend.models.dtos.VerifyEmailRequestDto;
 import com.edurumluemrullah.northwind_backend.models.pojos.User;
 import com.edurumluemrullah.northwind_backend.models.pojos.VerificationCode;
@@ -48,19 +45,11 @@ public class EmailServiceImpl implements EmailService {
     public Result sendVerificationCode(String email) {
 
         DataResult<User> userByEmail = userService.getUserByEmail(email);
-        VerificationCode verificationCodeObject = new VerificationCode();
+
 
         int min = 100000;
         int max = 999999;
         int verificationCode = (int)Math.floor(Math.random()*(max-min+1)+min);
-
-        verificationCodeObject.setVerificationCode(String.valueOf(verificationCode));
-        verificationCodeObject.setAttemptCount(attemptCount);
-        verificationCodeObject.setExpiredDate(new Date(System.currentTimeMillis()+verificationCodeExpiredTime));
-        verificationCodeObject.setUserId(userByEmail.getData().getId());
-
-
-        verificationCodeService.create(verificationCodeObject);
 
         SimpleMailMessage mailMessage
                 = new SimpleMailMessage();
@@ -75,6 +64,17 @@ public class EmailServiceImpl implements EmailService {
         javaMailSender.send(mailMessage);// TODO MailException handle
 
 
+        VerificationCode verificationCodeObject = new VerificationCode();
+
+
+
+        verificationCodeObject.setVerificationCode(String.valueOf(verificationCode));
+        verificationCodeObject.setAttemptCount(attemptCount);
+        verificationCodeObject.setExpiredDate(new Date(System.currentTimeMillis()+verificationCodeExpiredTime));
+        verificationCodeObject.setUserId(userByEmail.getData().getId());
+
+
+        verificationCodeService.create(verificationCodeObject);
 
         return new SuccessResult("Email sent successfully");
     }
@@ -90,24 +90,24 @@ public class EmailServiceImpl implements EmailService {
         VerificationCode verificationCode = verificationCodeDataResult.getData();
 
         if(!verificationCodeDataResult.isSuccess()){
-            throw new VerificationCodeNotFoundException("Verification code not found"); //TODO handle
+            throw new VerificationCodeNotFoundException("Verification code not found");
         }
 
         if(verificationCode.getAttemptCount()==0){
             verificationCodeService.delete(verificationCode);
-            throw new NoAttemptException("Incorrect verification code entered 5 times , get a new verification code");//TODO handle
+            throw new NoAttemptException("Incorrect verification code entered 5 times , get a new verification code");
         }
 
-        if(verificationCode.getExpiredDate().after(new Date(System.currentTimeMillis()))){
+        if(verificationCode.getExpiredDate().before(new Date(System.currentTimeMillis()))){
             verificationCodeService.delete(verificationCode);
-            throw new VerificationCodeExpiredException("Verification code expired, get a new verification code");//TODO handle
+            throw new VerificationCodeExpiredException("Verification code expired, get a new verification code");
         }
 
 
         if(!verificationCode.getVerificationCode().equals(verifyEmailRequestDto.getVerifyCode())){
            verificationCode.setAttemptCount(verificationCode.getAttemptCount()-1);
            verificationCodeService.update(verificationCode);
-           throw new WrongVerifcationCodeException("entered verification code is wrong");//TODO handle
+           throw new WrongVerifcationCodeException("entered verification code is wrong");
         }
 
         verificationCodeService.delete(verificationCode);
