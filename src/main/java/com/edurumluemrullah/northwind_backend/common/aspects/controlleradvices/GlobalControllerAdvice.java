@@ -7,6 +7,7 @@ import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -106,4 +107,14 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
         return ResponseEntity.badRequest().body(new ErrorResult(exception.getMessage()));
     }
 
+    @ExceptionHandler(MailException.class)
+    protected ResponseEntity<Object> mailExceptionHandler(WebRequest request,MailException exception){
+        return ResponseEntity.badRequest().body(new ErrorResult(exception.getMessage()));
+    }
+
+
+    @ExceptionHandler(AlreadyHaveVerificationCodeException.class)
+    protected ResponseEntity<Object> AlreadyHaveVerificationCodeExceptionHandler(WebRequest request,AlreadyHaveVerificationCodeException exception){
+        return ResponseEntity.badRequest().body(new ErrorResult(exception.getMessage()));
+    }
 }
