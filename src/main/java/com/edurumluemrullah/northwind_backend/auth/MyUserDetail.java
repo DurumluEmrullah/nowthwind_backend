@@ -45,7 +45,7 @@ public class MyUserDetail implements UserDetailsService {
                 .accountExpired(false)//
                 .accountLocked(false)//
                 .credentialsExpired(false)//
-                .disabled(false)//
+                .disabled(false)//   mail verification
                 .build();
     }
 }

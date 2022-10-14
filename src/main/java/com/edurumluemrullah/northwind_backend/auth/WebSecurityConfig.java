@@ -33,6 +33,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .antMatchers("/users/login").permitAll()//
                 .antMatchers("/users/register").permitAll()//
+                .antMatchers("/email/verify").permitAll()
+                .antMatchers("/email/sendVerificationCode").permitAll()
                 .antMatchers(HttpMethod.GET).authenticated()
                 .antMatchers(HttpMethod.POST).hasAnyAuthority("ADMIN","CREATOR")
                 .antMatchers(HttpMethod.PUT).hasAnyAuthority("ADMIN","CREATOR")

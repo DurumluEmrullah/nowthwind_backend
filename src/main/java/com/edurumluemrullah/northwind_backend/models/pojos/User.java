@@ -24,6 +24,9 @@ public class User {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "validated")
+    private boolean validated;
+
     @ManyToMany(
             cascade = CascadeType.ALL,
             fetch = FetchType.EAGER

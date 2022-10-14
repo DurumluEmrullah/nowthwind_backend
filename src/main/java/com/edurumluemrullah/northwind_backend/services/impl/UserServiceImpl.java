@@ -1,10 +1,7 @@
 package com.edurumluemrullah.northwind_backend.services.impl;
 
 import com.edurumluemrullah.northwind_backend.auth.JwtTokenProvider;
-import com.edurumluemrullah.northwind_backend.common.exceptions.EmailAlreadyExistException;
-import com.edurumluemrullah.northwind_backend.common.exceptions.LoginException;
-import com.edurumluemrullah.northwind_backend.common.exceptions.UserAlreadyExistException;
-import com.edurumluemrullah.northwind_backend.common.exceptions.UserNotFoundException;
+import com.edurumluemrullah.northwind_backend.common.exceptions.*;
 import com.edurumluemrullah.northwind_backend.common.results.DataResult;
 import com.edurumluemrullah.northwind_backend.common.results.SuccessDataResult;
 import com.edurumluemrullah.northwind_backend.daos.UserDao;
@@ -32,6 +29,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRoleService userRoleService;
 
+
     public UserServiceImpl(UserDao userDao, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider, UserRoleService userRoleService) {
         this.userDao = userDao;
         this.passwordEncoder = passwordEncoder;
@@ -44,13 +42,17 @@ public class UserServiceImpl implements UserService {
     public DataResult<UserLoginResponseDto> login(UserLoginRequestDto userLoginRequestDto) {
 //TODO refactor edilecek !!!
         Optional<User> user = userDao.findByUsername(userLoginRequestDto.getUsername());
-        String test123 = passwordEncoder.encode("test123");
+
         if(!user.isPresent()){
             throw new UserNotFoundException("User '" + userLoginRequestDto.getUsername() + "' not found");
         }
      //   user.get().getPassword().equals(passwordEncoder.encode(userLoginRequestDto.getPassword()))
         if(!passwordEncoder.matches(userLoginRequestDto.getPassword(),user.get().getPassword())  ){
             throw new LoginException("wrong password");
+        }
+
+        if(!user.get().isValidated()){
+            throw new EmailNotValidatedException("This email isn't validated");
         }
 
         UserLoginResponseDto userLoginResponseDto = new UserLoginResponseDto();
@@ -63,7 +65,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public DataResult<UserLoginResponseDto> register(UserRegisterRequestDto userRegisterRequestDto) {
+    public DataResult<User> register(UserRegisterRequestDto userRegisterRequestDto) {
         //TODO refactor edilecek !!!
         Optional<User> byUsername = userDao.findByUsername(userRegisterRequestDto.getUsername());
 
@@ -78,7 +80,6 @@ public class UserServiceImpl implements UserService {
         }
 
 
-        // TODO  email validation  ......
 
         User user = new User();
         user.setUsername(userRegisterRequestDto.getUsername());
@@ -88,6 +89,7 @@ public class UserServiceImpl implements UserService {
         UserRole userRole = new UserRole();
         userRole.setRole("USER");
         UserRole userRoleIsExist = userRoleService.getByRole("USER");
+        user.setValidated(false);
         if(userRoleIsExist !=null){
             userRole=userRoleIsExist;
         }
@@ -97,15 +99,23 @@ public class UserServiceImpl implements UserService {
 
         User registeredUser = userDao.save(user);
 
-        UserLoginResponseDto userLoginResponseDto = new UserLoginResponseDto();
 
-        userLoginResponseDto.setUsername(registeredUser.getUsername());
-        userLoginResponseDto.setEmail(registeredUser.getEmail());
-        userLoginResponseDto.setToken(jwtTokenProvider.generateToken(registeredUser.getUsername(),registeredUser.getUserRoleList()));
+        return new SuccessDataResult<>("registered",user); //TODO DÜZELT
+    }
 
+    @Override
+    public DataResult<User> getUserByEmail(String email) {
+        Optional<User> byEmail = userDao.findByEmail(email);
 
+        if(!byEmail.isPresent()){
+            throw new EmailNotFoundException("Email not found");
+        }
 
+        return new SuccessDataResult<>("User found",byEmail.get()) ;
+    }
 
-        return new SuccessDataResult<>("kayıt gerçekleşti",userLoginResponseDto);
+    @Override
+    public DataResult<User> updateUser(User user) {
+        return new SuccessDataResult<>("updated user",userDao.save(user));
     }
 }
